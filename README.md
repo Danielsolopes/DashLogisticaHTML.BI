@@ -1,118 +1,41 @@
 # DashLogisticaHTML.BI
 
-README — Dashboard Logística (Power BI + HTML/DAX)
-🎯 Objetivo
-Dashboard executivo de logística no Power BI, com filtros internos em HTML que recalculam tudo client-side, a partir do [JSON Gold Dashboard Logistica].
+Dashboard Logística 
+Stack: Power BI + DAX + HTML/CSS/JS (client-side)
 
-🧱 Arquitetura em 3 camadas
+Medidas
+Medida	Função
+JSON Gold Dashboard Logistica	Fonte única de dados
+HTML Filtros Dashboard Logistica	5 filtros + Limpar + Dark/Light
+HTML Dashboard Logistica	KPIs, gráfico, rankings, tabela
+Fluxo
+Filtros → evento ld-filter-change → Dashboard recalcula em JS.
 
-Camada	Medida DAX	Função
-1. Filtros	HTML Filtros Dashboard Logistica	Renderiza 5 <select> (Mês, Região, Categoria, Transportadora, Modal) + botão Limpar + seletor Dark/Light
+Fonte
+baseInterativa do JSON Gold: m, r, t, o, c, pr, qt, p, q, qe, cp, lt, ln, co, at, an, dv, av, ex.
 
-2. Dashboard	HTML Dashboard Logistica	Lê o JSON Gold, escuta eventos de filtro e recalcula tudo em JS
+Como usar
+Crie as 3 medidas (formato Texto).
 
-3. Dados	JSON Gold Dashboard Logistica	Fonte única, contém meta, kpis, séries, rankings e baseInterativa
+Visual HTML Content para cada uma, na mesma página.
 
-🔄 Fluxo de comunicação
-text
-[Filtros HTML]  --ld-filter-change-->  [Dashboard HTML]
+Filtros no topo, dashboard abaixo.
 
-                 --ld-theme-change-->   (recalcula client-side)
-                 
-Estado persistido em sessionStorage (chave ld-filters-v1)
+Recursos
+Filtros combinados + persistência (sessionStorage)
 
-Filtros externos do Power BI são preservados (o JSON já vem filtrado)
+Tema Dark/Light · Tooltip própria · Estado vazio
 
-🗂️ Campos esperados em baseInterativa
-Campo	Significado
-m	Mês (YYYY-MM)
-r	Região
-t	Transportadora
-o	Modal
-c	Categoria
-pr	Produto
-qt	Quantidade
-p	Pedidos
-q / qe	Pedidos OTIF / elegíveis
-cp	Custo logístico
-lt / ln	Soma lead time / nº observações
-co	Emissões CO₂
-at / an	Soma atraso / nº observações
-dv / av / ex	Devoluções / avarias / extravios
-⚠️ Sem baseInterativa completa, os filtros renderizam mas não recalculam.
+Tabela ordenável · aria-sort · prefers-reduced-motion
 
-🧩 Componentes renderizados
-Header com estrada animada + carros
+Zero CDN/API/biblioteca
 
-Ticker de top 4 produtos
+Limitações
+Filtragem é client-side (DAX não filtra modelo)
 
-5 KPI cards (Pedidos, OTIF, Custo, Lead Time, Emissões) com variação vs mês anterior
+Depende do JSON Gold trazer baseInterativa completa
 
-Gráfico mensal (barras + linha OTIF + mediana tracejada)
+Slicers nativos só funcionam com ponte data-ld-slicer
 
-Leitura executiva (3 insights dinâmicos)
-
-3 rankings (OTIF por transportadora, custo por região, risco por modal)
-
-Tabela comparativa ordenável por clique
-
-✅ Funcionalidades
-Filtros combinados e persistentes
-
-Botão Limpar filtros
-
-Tema Dark / Light
-
-Tooltip HTML própria
-
-Estado vazio em cada bloco
-
-aria-sort, aria-label, aria-live
-
-Respeita prefers-reduced-motion
-
-Zero dependências externas (sem CDN, API ou biblioteca)
-
-🚀 Como usar
-Crie as medidas na ordem: JSON Gold → Filtros → Dashboard
-
-Formate todas como Texto
-
-Insira na página:
-
-Visual HTML Content → HTML Filtros Dashboard Logistica (topo)
-
-Visual HTML Content → HTML Dashboard Logistica (abaixo)
-
-Ambos precisam estar na mesma página para os eventos window funcionarem
-
-🧪 Checklist rápido
-□ Sem filtros → totais globais corretos
-□ Filtro isolado (Mês, Região, Categoria, Transportadora, Modal)
-□ Filtros combinados
-□ Botão Limpar
-□ Alternância Dark/Light
-□ Estado vazio
-□ Ordenação da tabela
-□ Renderização no Power BI (visual HTML Content)
-⚠️ Limitações conhecidas
-Medida DAX não filtra o modelo — a filtragem é client-side via JS
-
-Depende do JSON Gold conter baseInterativa completa
-
-O Power BI pode re-renderizar o visual ao mudar contexto externo (estado é restaurado via sessionStorage)
-
-Slicers nativos do Power BI não são acionados pelo HTML (a menos que você implemente a ponte com data-ld-slicer)
-
-📌 Regras de negócio preservadas
-OTIF exige On Time e In Full no mesmo pedido
-
-Pedidos pendentes permanecem na fato
-
-Lead time só considera entregas concluídas
-
-Pendentes não são classificados como atrasados sem regra confirmada
-
-Percentuais entre 0% e 100%
-
-OTIF ≤ elegíveis ≤ total de pedidos
+Regras preservadas
+OTIF = On Time e In Full no mesmo pedido · pendentes ficam na fato · lead time só em entregues · percentuais 0–100%.
