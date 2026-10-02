@@ -5,14 +5,20 @@ README — Dashboard Logística (Power BI + HTML/DAX)
 Dashboard executivo de logística no Power BI, com filtros internos em HTML que recalculam tudo client-side, a partir do [JSON Gold Dashboard Logistica].
 
 🧱 Arquitetura em 3 camadas
+
 Camada	Medida DAX	Função
 1. Filtros	HTML Filtros Dashboard Logistica	Renderiza 5 <select> (Mês, Região, Categoria, Transportadora, Modal) + botão Limpar + seletor Dark/Light
+
 2. Dashboard	HTML Dashboard Logistica	Lê o JSON Gold, escuta eventos de filtro e recalcula tudo em JS
+
 3. Dados	JSON Gold Dashboard Logistica	Fonte única, contém meta, kpis, séries, rankings e baseInterativa
+
 🔄 Fluxo de comunicação
 text
 [Filtros HTML]  --ld-filter-change-->  [Dashboard HTML]
+
                  --ld-theme-change-->   (recalcula client-side)
+                 
 Estado persistido em sessionStorage (chave ld-filters-v1)
 
 Filtros externos do Power BI são preservados (o JSON já vem filtrado)
